@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Escanea documentos desde tu cámara o galería, mejora los bordes de las letras y genera un PDF al instante sin salir del teléfono.">
+  <title>DocScan PDF — Escáner y Unión PDF</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/svg+xml" href="./icons/icon.svg">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Top App Bar -->
+    <header class="top-bar">
+      <div class="brand">
+        <img src="./icons/icon.svg" alt="" class="brand-icon" width="32" height="32">
+        <div class="brand-text">
+          <h1>DocScan PDF</h1>
+          <span class="subtitle">Escáner local sin internet</span>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <span id="pageCountBadge" class="badge-count" aria-live="polite">0 págs</span>
+        <button id="burstCameraBtn" type="button" class="btn-icon-text" title="Cámara continua en app">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          <span class="hide-xs">Ráfaga</span>
+        </button>
+        <button id="installBtn" type="button" class="btn-install hidden">Instalar</button>
+        <button id="clearAllBtn" type="button" class="btn-icon hidden" title="Vaciar todo" aria-label="Vaciar todas las páginas">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+        </button>
+        <button id="helpBtn" type="button" class="btn-icon" title="Cómo instalar y usar" aria-label="Ayuda e instalación">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Automatic Filter Preset Strip -->
+    <section class="preset-strip" aria-label="Filtro automático para nuevas páginas">
+      <div class="preset-header">
+        <span class="preset-label">Mejora automática:</span>
+        <button id="applyAllBtn" type="button" class="btn-link hidden">Aplicar a todas</button>
+      </div>
+      <div id="presetBar" class="chip-scroll">
+        <button type="button" class="preset-chip active" data-mode="doc_color">Documento Color</button>
+        <button type="button" class="preset-chip" data-mode="doc_bw">Texto Nítido B&amp;N</button>
+        <button type="button" class="preset-chip" data-mode="sauvola">Alto Contraste</button>
+        <button type="button" class="preset-chip" data-mode="magic_gray">Grises</button>
+        <button type="button" class="preset-chip" data-mode="original">Original</button>
+      </div>
+    </section>
+
+    <!-- Processing Progress Banner -->
+    <div id="processingBanner" class="processing-banner hidden" role="status" aria-live="polite">
+      <span class="spinner"></span>
+      <span id="processingText">Mejorando nitidez del documento...</span>
+    </div>
+
+    <!-- Main Document Grid -->
+    <main class="main-content">
+      <div id="emptyState" class="empty-state">
+        <div class="empty-illustration">
+          <svg viewBox="0 0 80 80" width="68" height="68" fill="none">
+            <rect x="14" y="10" width="46" height="58" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="2.5"/>
+            <line x1="24" y1="26" x2="50" y2="26" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+            <line x1="24" y1="36" x2="48" y2="36" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+            <line x1="24" y1="46" x2="42" y2="46" stroke="#64748b" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="56" cy="56" r="15" fill="#2563eb"/>
+            <path d="M56 49v14M49 56h14" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h2>Escanea y une tus documentos en PDF</h2>
+        <p>Toma fotos con la cámara de tu teléfono o importa imágenes de tu galería. Realzamos el borde de las letras y limpiamos sombras al instante, 100% en tu dispositivo.</p>
+        <div class="empty-cta-group">
+          <button id="emptyCameraBtn" type="button" class="btn-primary">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            Tomar foto con cámara
+          </button>
+          <button id="emptyGalleryBtn" type="button" class="btn-secondary">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            Elegir de galería
+          </button>
+        </div>
+      </div>
+
+      <div id="pagesGrid" class="pages-grid hidden" aria-label="Páginas del documento"></div>
+    </main>
+
+    <!-- Hidden File Inputs -->
+    <input id="cameraInput" type="file" accept="image/*" capture="environment" class="sr-only">
+    <input id="galleryInput" type="file" accept="image/*" multiple class="sr-only">
+
+    <!-- Sticky Bottom Action Bar -->
+    <footer class="bottom-bar">
+      <button id="cameraBtn" type="button" class="action-btn">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <span>Cámara</span>
+      </button>
+      <button id="galleryBtn" type="button" class="action-btn">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <span>Galería</span>
+      </button>
+      <button id="createPdfBtn" type="button" class="action-btn action-btn-primary" disabled>
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <span>Crear PDF (<strong id="pdfBtnCount">0</strong>)</span>
+      </button>
+    </footer>
+  </div>
+
+  <!-- Page Editor Modal -->
+  <div id="editorModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="editorTitle">
+    <div class="modal-sheet modal-fullscreen">
+      <header class="modal-header">
+        <button id="editorCloseBtn" type="button" class="btn-ghost">Cancelar</button>
+        <h2 id="editorTitle">Editar página</h2>
+        <button id="editorSaveBtn" type="button" class="btn-primary btn-sm">Guardar</button>
+      </header>
+
+      <div id="editorStage" class="editor-stage">
+        <div class="editor-canvas-wrap">
+          <img id="editorImg" alt="Vista previa del documento">
+          <canvas id="cropCanvas" class="crop-canvas"></canvas>
+        </div>
+        <button id="compareHoldBtn" type="button" class="compare-pill">Mantener: Ver original</button>
+        <div id="editorBusy" class="editor-busy hidden">
+          <span class="spinner"></span>
+          <span>Procesando nitidez...</span>
+        </div>
+      </div>
+
+      <div id="cropToolbar" class="crop-toolbar hidden">
+        <button id="autoCropBtn" type="button" class="btn-secondary btn-sm">Auto-detectar</button>
+        <button id="fullCropBtn" type="button" class="btn-secondary btn-sm">Página completa</button>
+        <button id="applyCropDoneBtn" type="button" class="btn-primary btn-sm">Listo recorte</button>
+      </div>
+
+      <div class="editor-controls">
+        <div class="editor-tools-row">
+          <button id="toggleCropBtn" type="button" class="tool-btn">Recorte 4 esquinas</button>
+          <button id="rotateBtn" type="button" class="tool-btn">Rotar 90°</button>
+          <button id="resetPageBtn" type="button" class="tool-btn">Restablecer</button>
+        </div>
+
+        <div id="editorModeChips" class="chip-scroll">
+          <button type="button" class="mode-chip" data-mode="doc_color">Documento Color</button>
+          <button type="button" class="mode-chip" data-mode="doc_bw">Texto Nítido B&amp;N</button>
+          <button type="button" class="mode-chip" data-mode="sauvola">Alto Contraste</button>
+          <button type="button" class="mode-chip" data-mode="magic_gray">Grises</button>
+          <button type="button" class="mode-chip" data-mode="original">Original</button>
+        </div>
+
+        <div class="sliders-group">
+          <label class="slider-row">
+            <span>Nitidez de letras <strong id="sharpnessVal">65</strong></span>
+            <input id="sharpnessSlider" type="range" min="0" max="100" step="5" value="65">
+          </label>
+          <label class="slider-row">
+            <span>Contraste / Tinta <strong id="contrastVal">0</strong></span>
+            <input id="contrastSlider" type="range" min="-50" max="50" step="5" value="0">
+          </label>
+          <label class="slider-row">
+            <span>Limpieza de fondo <strong id="bgCleanVal">70</strong></span>
+            <input id="bgCleanSlider" type="range" min="0" max="100" step="5" value="70">
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- In-App Burst Camera Modal -->
+  <div id="cameraModal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Cámara continua">
+    <div class="modal-sheet modal-fullscreen camera-sheet">
+      <header class="modal-header camera-header">
+        <button id="camCloseBtn" type="button" class="btn-ghost">Cerrar</button>
+        <span id="camCountBadge" class="badge-count">0 tomadas</span>
+        <button id="camTorchBtn" type="button" class="btn-ghost hidden">Linterna</button>
+      </header>
+
+      <div class="camera-viewport">
+        <video id="camVideo" autoplay playsinline muted></video>
+        <div class="camera-guide" aria-hidden="true"></div>
+        <div id="camFallbackBox" class="camera-fallback hidden">
+          <p id="camFallbackMsg">La cámara en vivo dentro del navegador requiere HTTPS o permiso de cámara.</p>
+          <button id="camNativeFallbackBtn" type="button" class="btn-primary">Usar cámara nativa del teléfono</button>
+        </div>
+      </div>
+
+      <footer class="camera-footer">
+        <div class="cam-spacer"></div>
+        <button id="camShutterBtn" type="button" class="shutter-btn" aria-label="Capturar página"></button>
+        <button id="camDoneBtn" type="button" class="btn-primary btn-sm">Listo</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Export PDF Modal -->
+  <div id="exportModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="exportTitle">
+    <div class="modal-sheet modal-card">
+      <header class="modal-header">
+        <h2 id="exportTitle">Crear y guardar PDF</h2>
+        <button id="exportCloseBtn" type="button" class="btn-icon" aria-label="Cerrar">&times;</button>
+      </header>
+
+      <div class="modal-body">
+        <label class="field-label">
+          <span>Nombre del archivo</span>
+          <input id="pdfFilenameInput" type="text" class="text-input" placeholder="Documento_escaneado">
+        </label>
+
+        <div class="option-block">
+          <span class="option-title">Tamaño de página</span>
+          <div id="pageSizeGroup" class="pill-group">
+            <button type="button" class="pill-btn active" data-value="a4">A4</button>
+            <button type="button" class="pill-btn" data-value="letter">Carta</button>
+            <button type="button" class="pill-btn" data-value="fit">Ajustar foto</button>
+          </div>
+        </div>
+
+        <div class="option-block">
+          <span class="option-title">Márgenes</span>
+          <div id="marginGroup" class="pill-group">
+            <button type="button" class="pill-btn active" data-value="18">Margen fino</button>
+            <button type="button" class="pill-btn" data-value="0">Sin margen</button>
+          </div>
+        </div>
+
+        <div class="option-block">
+          <span class="option-title">Calidad y peso</span>
+          <div id="qualityGroup" class="pill-group">
+            <button type="button" class="pill-btn" data-value="high">Alta</button>
+            <button type="button" class="pill-btn active" data-value="balanced">Balanceada</button>
+            <button type="button" class="pill-btn" data-value="compact">Ligera</button>
+          </div>
+        </div>
+
+        <button id="generatePdfBtn" type="button" class="btn-primary btn-full">Generar archivo PDF</button>
+
+        <div id="exportResultBox" class="export-result hidden">
+          <div class="result-badge">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <div>
+              <strong>PDF listo en tu dispositivo</strong>
+              <p id="pdfStatsText">Listo</p>
+            </div>
+          </div>
+          <div class="result-actions">
+            <button id="sharePdfBtn" type="button" class="btn-success btn-full">Compartir PDF (WhatsApp / Correo / Drive)</button>
+            <div class="result-sub-actions">
+              <button id="downloadPdfBtn" type="button" class="btn-secondary">Descargar PDF</button>
+              <button id="previewPdfBtn" type="button" class="btn-secondary">Abrir vista previa</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Help & Android Install Modal -->
+  <div id="helpModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <div class="modal-sheet modal-card">
+      <header class="modal-header">
+        <h2 id="helpTitle">Instalar en Android y consejos</h2>
+        <button id="helpCloseBtn" type="button" class="btn-icon" aria-label="Cerrar">&times;</button>
+      </header>
+      <div class="modal-body help-body">
+        <div class="help-card">
+          <h3>Instalar como aplicación en Android</h3>
+          <p>Al abrir esta web en Chrome desde tu teléfono (por HTTPS o localhost), toca el menú <strong>⋮ &rarr; Instalar aplicación</strong> (o el botón <strong>Instalar</strong> arriba). Quedará como app en tu pantalla de inicio y funcionará <strong>sin internet</strong>.</p>
+          <button id="helpInstallBtn" type="button" class="btn-primary btn-sm hidden">Instalar ahora</button>
+        </div>
+
+        <div class="help-card">
+          <h3>Modos de nitidez para documentos</h3>
+          <ul>
+            <li><strong>Documento Color:</strong> Limpia sombras y papel gris conservando firmas, sellos y colores.</li>
+            <li><strong>Texto Nítido B&amp;N:</strong> Realza el borde de cada letra y deja el fondo blanco puro. Ideal para apuntes, contratos y recibos.</li>
+            <li><strong>Alto Contraste (Sauvola):</strong> Umbral adaptativo local para fotos con sombras fuertes o tinta tenue.</li>
+            <li><strong>Grises:</strong> Escala de grises limpia para documentos con diagramas o fotografías.</li>
+          </ul>
+        </div>
+
+        <div class="help-card">
+          <h3>Cámara vs Ráfaga vs Galería</h3>
+          <p>El botón <strong>Cámara</strong> abre la cámara nativa de Android con máxima resolución y autoenfoque. El botón <strong>Ráfaga</strong> permite sacar varias hojas seguidas sin salir de la pantalla.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <script src="./js/image-processor.js"></script>
+  <script src="./js/pdf-builder.js"></script>
+  <script src="./js/storage.js"></script>
+  <script src="./js/crop-overlay.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>
