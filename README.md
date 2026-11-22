@@ -32,3 +32,8 @@ Para instalarla permanentemente con Service Worker offline e ícono en tu pantal
 2. Abre la URL HTTPS en **Chrome en tu Android**.
 3. Toca el botón **Instalar** dentro de la app (o menú **⋮ → Instalar aplicación**).
 4. Listo: quedará instalada en Android y seguirá funcionando incluso en **Modo Avión / sin internet**.
+
+## Cómo agregar varias fotos y actualizar la app en GitHub Pages
+
+- **Varias fotos a la vez:** Toca **Elegir fotos de galería (varias)** o **Galería (+)**; en PC puedes seleccionar varios archivos con `Ctrl` / `Shift` o arrastrar varias imágenes directamente a la ventana. También puedes seguir añadiendo páginas con la tarjeta **+ Añadir más páginas** al final de la cuadrícula o usando el modo **Cámara en vivo (Ráfaga)**.
+- **Si actualizas la app en GitHub Pages:** Si ya habías abierto una versión anterior en tu teléfono, recarga la página una vez con conexión a internet para que el Service Worker descargue la versión nueva.

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'docscan-pdf-v1';
+const CACHE_NAME = 'docscan-pdf-v2';
 const STATIC_ASSETS = [
   './',
   './index.html',
@@ -42,24 +42,22 @@ self.addEventListener('fetch', (event) => {
   if (url.origin !== self.location.origin) return;
 
   event.respondWith(
-    caches.match(req).then((cached) => {
-      if (cached) {
-        return cached;
-      }
-      return fetch(req)
-        .then((response) => {
-          if (response && response.status === 200 && response.type === 'basic') {
-            const clone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(req, clone));
-          }
-          return response;
-        })
-        .catch(() => {
+    fetch(req)
+      .then((response) => {
+        if (response && response.status === 200 && response.type === 'basic') {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(req, clone));
+        }
+        return response;
+      })
+      .catch(() =>
+        caches.match(req).then((cached) => {
+          if (cached) return cached;
           if (req.mode === 'navigate') {
             return caches.match('./index.html');
           }
           return new Response('Sin conexión', { status: 503, statusText: 'Offline' });
-        });
-    })
+        })
+      )
   );
 });
