@@ -22,7 +22,7 @@
         <img src="./icons/icon.svg" alt="" class="brand-icon" width="32" height="32">
         <div class="brand-text">
           <h1>DocScan PDF</h1>
-          <span class="subtitle">Escáner local sin internet</span>
+          <span class="subtitle">Escáner local • v3</span>
         </div>
       </div>
 
@@ -77,46 +77,42 @@
           </svg>
         </div>
         <h2>Escanea y une tus documentos en PDF</h2>
-        <p>Toma fotos con la cámara de tu teléfono o importa imágenes de tu galería. Realzamos el borde de las letras y limpiamos sombras al instante, 100% en tu dispositivo.</p>
+        <p>Selecciona varias fotos de tu galería o usa la cámara en tiempo real. Realzamos el borde de las letras y limpiamos sombras al instante, 100% en tu teléfono.</p>
         <div class="empty-cta-group">
           <label id="emptyGalleryLabel" class="btn-primary file-trigger">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-            <span>Elegir fotos de galería (varias)</span>
+            <span>Subir varias fotos de galería</span>
             <input id="emptyGalleryInput" type="file" accept="image/*" multiple class="file-overlay-input js-gallery-input">
           </label>
-          <label id="emptyCameraLabel" class="btn-secondary file-trigger">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-            <span>Tomar foto (Cámara nativa)</span>
-            <input id="emptyCameraInput" type="file" accept="image/*" capture="environment" class="file-overlay-input js-camera-input">
-          </label>
           <button id="emptyBurstBtn" type="button" class="btn-secondary">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg>
-            <span>Cámara en vivo (varias seguidas)</span>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <span>Cámara en tiempo real (Ráfaga)</span>
           </button>
-          <p class="empty-hint">En PC también puedes arrastrar varias imágenes aquí o elegir varias con Ctrl/Shift.</p>
+          <p class="empty-hint">Selecciona varias fotos a la vez o captura varias hojas seguidas con la cámara en vivo.</p>
         </div>
       </div>
 
+      <!-- Centered Workspace Actions (visible when at least 1 page exists) -->
+      <section id="workspaceActions" class="workspace-actions hidden" aria-label="Acciones del documento">
+        <button id="createPdfBtn" type="button" class="btn-pdf-hero" disabled>
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <span>Crear PDF (<strong id="pdfBtnCount">0</strong> páginas)</span>
+        </button>
+        <div class="workspace-secondary-row">
+          <label id="addGalleryLabel" class="btn-secondary file-trigger">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <span>+ Galería (varias)</span>
+            <input id="galleryInput" type="file" accept="image/*" multiple class="file-overlay-input js-gallery-input">
+          </label>
+          <button id="addBurstBtn" type="button" class="btn-secondary">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <span>+ Cámara en vivo</span>
+          </button>
+        </div>
+      </section>
+
       <div id="pagesGrid" class="pages-grid hidden" aria-label="Páginas del documento"></div>
     </main>
-
-    <!-- Sticky Bottom Action Bar -->
-    <footer class="bottom-bar">
-      <label id="cameraBtn" class="action-btn file-trigger">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-        <span>Cámara</span>
-        <input id="cameraInput" type="file" accept="image/*" capture="environment" class="file-overlay-input js-camera-input">
-      </label>
-      <label id="galleryBtn" class="action-btn file-trigger">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-        <span>Galería (+)</span>
-        <input id="galleryInput" type="file" accept="image/*" multiple class="file-overlay-input js-gallery-input">
-      </label>
-      <button id="createPdfBtn" type="button" class="action-btn action-btn-primary" disabled>
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-        <span>Crear PDF (<strong id="pdfBtnCount">0</strong>)</span>
-      </button>
-    </footer>
   </div>
 
   <!-- Page Editor Modal -->
@@ -191,15 +187,12 @@
       <div class="camera-viewport">
         <video id="camVideo" autoplay playsinline muted></video>
         <div class="camera-guide" aria-hidden="true"></div>
+        <div id="camCaptureStatus" class="cam-status-pill hidden" aria-live="polite">¡Foto capturada!</div>
         <div id="camFallbackBox" class="camera-fallback hidden">
           <p id="camFallbackMsg">La cámara en vivo dentro del navegador requiere HTTPS o permiso de cámara.</p>
           <div class="camera-fallback-actions">
             <label class="btn-primary file-trigger">
-              <span>Usar cámara nativa</span>
-              <input type="file" accept="image/*" capture="environment" class="file-overlay-input js-camera-input js-close-cam-on-pick">
-            </label>
-            <label class="btn-secondary file-trigger">
-              <span>Elegir varias de galería</span>
+              <span>Subir varias fotos de galería</span>
               <input type="file" accept="image/*" multiple class="file-overlay-input js-gallery-input js-close-cam-on-pick">
             </label>
           </div>
@@ -265,9 +258,9 @@
             </div>
           </div>
           <div class="result-actions">
-            <button id="sharePdfBtn" type="button" class="btn-success btn-full">Compartir PDF (WhatsApp / Correo / Drive)</button>
+            <button id="downloadPdfBtn" type="button" class="btn-success btn-full">Descargar PDF</button>
             <div class="result-sub-actions">
-              <button id="downloadPdfBtn" type="button" class="btn-secondary">Descargar PDF</button>
+              <button id="sharePdfBtn" type="button" class="btn-secondary">Compartir PDF</button>
               <button id="previewPdfBtn" type="button" class="btn-secondary">Abrir vista previa</button>
             </div>
           </div>
@@ -301,8 +294,8 @@
         </div>
 
         <div class="help-card">
-          <h3>Cámara vs Ráfaga vs Galería</h3>
-          <p>El botón <strong>Cámara</strong> abre la cámara nativa de Android con máxima resolución y autoenfoque. El botón <strong>Ráfaga</strong> permite sacar varias hojas seguidas sin salir de la pantalla.</p>
+          <h3>Galería múltiple y cámara en vivo (Ráfaga)</h3>
+          <p>Usa <strong>Subir varias fotos de galería</strong> para elegir múltiples imágenes guardadas de una sola vez, o toca <strong>Ráfaga</strong> para sacar varias hojas seguidas con la cámara en tiempo real.</p>
         </div>
       </div>
     </div>

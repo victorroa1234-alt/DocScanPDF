@@ -4,8 +4,7 @@ Aplicación web progresiva (**PWA**) sin dependencias externas que funciona dire
 
 ## Características principales
 
-- **Cámara nativa y galería en el teléfono:** Toma fotos al instante con la cámara trasera en máxima resolución o selecciona varias imágenes ya guardadas en la galería.
-- **Modo Ráfaga en vivo:** Captura múltiples hojas seguidas sin salir de la pantalla (disponible bajo HTTPS o `localhost`).
+- **Galería múltiple y cámara en vivo (Ráfaga):** Selecciona varias imágenes ya guardadas en el teléfono de una sola vez o captura múltiples hojas seguidas con la cámara en tiempo real (disponible bajo HTTPS o `localhost`).
 - **Realce de bordes de letras y limpieza de fondo (100% local en el dispositivo):**
   - **Documento Color:** Normalización morfológica por canal para eliminar sombras manteniendo firmas y sellos a color, seguida de un realce de bordes con máscara de enfoque selectiva (*edge-aware unsharp mask* con umbral antirruido).
   - **Texto Nítido B&N:** Limpieza de iluminación, realce reforzado de bordes de texto y curva de alto contraste sobre blanco puro.
@@ -35,5 +34,5 @@ Para instalarla permanentemente con Service Worker offline e ícono en tu pantal
 
 ## Cómo agregar varias fotos y actualizar la app en GitHub Pages
 
-- **Varias fotos a la vez:** Toca **Elegir fotos de galería (varias)** o **Galería (+)**; en PC puedes seleccionar varios archivos con `Ctrl` / `Shift` o arrastrar varias imágenes directamente a la ventana. También puedes seguir añadiendo páginas con la tarjeta **+ Añadir más páginas** al final de la cuadrícula o usando el modo **Cámara en vivo (Ráfaga)**.
+- **Varias fotos a la vez:** Toca **Subir varias fotos de galería** o **+ Galería (varias)**; en PC puedes seleccionar varios archivos con `Ctrl` / `Shift` o arrastrar varias imágenes directamente a la ventana. También puedes capturar múltiples hojas seguidas usando **Cámara en vivo (Ráfaga)** y luego tocar el botón central **Crear PDF**.
 - **Si actualizas la app en GitHub Pages:** Si ya habías abierto una versión anterior en tu teléfono, recarga la página una vez con conexión a internet para que el Service Worker descargue la versión nueva.
